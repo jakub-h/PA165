@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 
+import cz.fi.muni.carshop.exceptions.RequestedCarNotFoundException;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.junit.rules.ExpectedException;
@@ -21,7 +23,12 @@ import cz.fi.muni.carshop.services.CarShopStorageServiceImpl;
 
 public class CarShopStorageServiceTest {
 
-	private CarShopStorageService service = new CarShopStorageServiceImpl();
+	private CarShopStorageService service;
+
+	@Before
+	public void prepare() {
+		service = new CarShopStorageServiceImpl();
+	}
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -64,4 +71,25 @@ public class CarShopStorageServiceTest {
 
 	}
 
+	@Test
+	public void testSellCar_happyScenario() {
+		Map<CarTypes, List<Car>> cars = CarShopStorage.getInstancce().getCars();
+		Car audi = new Car(Color.BLACK, CarTypes.AUDI, 2016, 100);
+		service.addCarToStorage(audi);
+		assertTrue(cars.size() == 1);
+		try {
+			service.sellCar(audi);
+		} catch (RequestedCarNotFoundException e) {
+			e.printStackTrace();
+		}
+		assertTrue(cars.containsKey(CarTypes.AUDI));
+		assertTrue(!cars.get(CarTypes.AUDI).contains(audi));
+	}
+
+	@Test
+	public void testSellCar_carNotFound() throws RequestedCarNotFoundException {
+		Car audi = new Car(Color.BLACK, CarTypes.AUDI, 2016, 100);
+		thrown.reportMissingExceptionWithMessage("Car not found.").expect(RequestedCarNotFoundException.class);
+		service.sellCar(audi);
+	}
 }

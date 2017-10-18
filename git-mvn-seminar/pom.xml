@@ -23,7 +23,6 @@
 		<module>car-shop</module>
 	</modules>
 	
-	
 
 	<dependencyManagement>
 		<dependencies>
@@ -41,5 +40,9 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+
+
+
 
 </project>
