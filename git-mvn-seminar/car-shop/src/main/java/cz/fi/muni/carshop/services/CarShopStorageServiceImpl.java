@@ -1,15 +1,13 @@
 package cz.fi.muni.carshop.services;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import cz.fi.muni.carshop.CarShopStorage;
 import cz.fi.muni.carshop.entities.Car;
 import cz.fi.muni.carshop.enums.CarTypes;
+import cz.fi.muni.carshop.exceptions.RequestedCarNotFoundException;
 
 public class CarShopStorageServiceImpl implements CarShopStorageService {
 
@@ -30,7 +28,20 @@ public class CarShopStorageServiceImpl implements CarShopStorageService {
 
 	@Override
 	public void addCarToStorage(Car car) {
+		if (car.getPrice() < 0) {
+			throw new IllegalArgumentException("Car has negative price.");
+		}
 		CarShopStorage.getInstancce().getCars().computeIfAbsent(car.getType(), x -> new ArrayList<>()).add(car);
 	}
 
+	public void sellCar(Car car) throws RequestedCarNotFoundException {
+		Collection<List<Car>> allCars = CarShopStorage.getInstancce().getCars().values();
+		for (List<Car> list : allCars) {
+			if (list.contains(car)) {
+				list.remove(car);
+				return;
+			}
+		}
+		throw new RequestedCarNotFoundException("Car not found.");
+	}
 }
