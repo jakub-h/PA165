@@ -6,21 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import cz.fi.muni.pa165.dto.Color;
@@ -29,7 +15,11 @@ import cz.fi.muni.pa165.validation.AllOrNothing;
 @Entity
 @AllOrNothing(members={"image", "imageMimeType"})
 public class Product {
-	
+
+
+	@ManyToMany(mappedBy = "products", fetch = FetchType.EAGER)
+	private Set<Category> categories = new HashSet<>();
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -72,27 +62,21 @@ public class Product {
 	/**
 	 * TODO these two methods are here just to make Task04 compilable. After you are finished
 	 * with TASK 02 you should delete this empty method
-	 * @param kitchen
 	 */
-	public void addCategory(Category kitchen) {	
+
+	public void removeCategory(Category category)	{
+		this.categories.remove(category);
 	}
-	public List<Product> getCategories() {
-		return null;
+
+	public void addCategory(Category c) {
+		categories.add(c);
+		c.addProduct(this);
 	}
-	//TODO after you are done with task02 you can uncomment this methods
-//	public void removeCategory(Category category)	{
-//		this.categories.remove(category);
-//	}
-//	
-//	public void addCategory(Category c) {
-//		categories.add(c);
-//		c.addProduct(this);
-//	}
-//
-//	public Set<Category> getCategories() {
-//		return Collections.unmodifiableSet(categories);
-//	}
-	
+
+	public Set<Category> getCategories() {
+		return Collections.unmodifiableSet(categories);
+	}
+
 
 
 	public java.util.Date getAddedDate() {
