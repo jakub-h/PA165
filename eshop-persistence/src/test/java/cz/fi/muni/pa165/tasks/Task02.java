@@ -46,17 +46,21 @@ public class Task02 extends AbstractTestNGSpringContextTests {
 		flashlight = new Product();
 		flashlight.setName("Flashlight");
 		flashlight.addCategory(electro);
+		electro.addProduct(flashlight);
 		em.persist(flashlight);
 
 		robot = new Product();
 		robot.setName("Kitchen Robot");
 		robot.addCategory(kitchen);
+		kitchen.addProduct(robot);
 		robot.addCategory(electro);
+		electro.addProduct(robot);
 		em.persist(flashlight);
 
 		plate = new Product();
 		plate.setName("Plate");
 		plate.addCategory(kitchen);
+		kitchen.addProduct(plate);
 		em.persist(plate);
 
 		em.getTransaction().commit();
