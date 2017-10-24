@@ -30,7 +30,8 @@ public class Product {
 
 	private String imageMimeType;
 	
-
+	@NotNull
+	@Column(nullable = false)
 	private String name;
 	
 	/*

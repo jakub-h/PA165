@@ -144,4 +144,14 @@ public class Task02 extends AbstractTestNGSpringContextTests {
 
 		assertContainsCategoryWithName(foundPlate.getCategories(), "Kitchen");
 	}
+
+	@Test(expectedExceptions=ConstraintViolationException.class)
+	public void testDoesntSaveNullName(){
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		Product product = new Product();
+		em.persist(product);
+		em.getTransaction().commit();
+		em.close();
+	}
 }
